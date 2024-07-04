@@ -1,0 +1,10 @@
+name: Build and push Docker image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dummy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "dummy job"
