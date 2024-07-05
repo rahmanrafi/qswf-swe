@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "palindrome.fullname" . }}
+  labels:
+    {{- include "palindrome.labels" . | nindent 4 }}
+spec:
+  containers:
+    - name: {{ include "palindrome.fullname" . }}
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      ports:
+        - containerPort: {{ .Values.service.port }}
+          protocol: TCP
+          name: http
+      livenessProbe:
+        {{ .Values.livenessProbe | toYaml | indent 8 | trim }}
+      readinessProbe:
+        {{ .Values.readinessProbe | toYaml | indent 8 | trim }}
