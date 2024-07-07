@@ -42,6 +42,7 @@ func (s *server) handleGetSingleMessage() http.HandlerFunc {
 	// a separate response for message
 	type response struct {
 		MessageText  string `json:"messageText"`
+		IsPalindrome bool   `json:"isPalindrome"`
 	}
 	return func(rw http.ResponseWriter, req *http.Request) {
 		// parse the request to fetch the id from the URI
@@ -62,7 +63,7 @@ func (s *server) handleGetSingleMessage() http.HandlerFunc {
 			return
 		}
 
-		res := response{MessageText: message.Text}
+		res := response{MessageText: message.Text, IsPalindrome: message.IsPalindrome}
 		err = data.ToJSON(res, rw)
 		if err != nil {
 			http.Error(rw, "Internal error", http.StatusInternalServerError)
