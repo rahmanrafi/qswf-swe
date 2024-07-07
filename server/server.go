@@ -22,7 +22,7 @@ var servicePort = os.Getenv("PORT")
 // NewServer returns an instance of server configured with logger and router
 func NewServer() Server {
 	r := mux.NewRouter()
-	// same as for t3: instead of configuring the api subrouter here (and losing the root router for non-api endpoints)
+	// instead of configuring the api subrouter here (and losing the root router for non-api endpoints)
 	// assign server.router to be the root router, and configure the api subrouter in RegisterRoutes()
 	// s := r.PathPrefix("/api/v1").Subrouter()
 	return &server{

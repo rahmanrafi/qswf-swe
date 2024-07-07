@@ -42,7 +42,8 @@ func (s *server) handlePostMessage() http.HandlerFunc {
 func (s *server) handleGetSingleMessage() http.HandlerFunc {
 	// a separate response for message
 	type response struct {
-		MessageText string `json:"messageText"`
+		MessageText  string `json:"messageText"`
+		IsPalindrome bool   `json:"isPalindrome"`
 	}
 	return func(rw http.ResponseWriter, req *http.Request) {
 		// parse the request to fetch the id from the URI
@@ -63,7 +64,7 @@ func (s *server) handleGetSingleMessage() http.HandlerFunc {
 			return
 		}
 
-		res := response{MessageText: message.Text}
+		res := response{MessageText: message.Text, IsPalindrome: message.IsPalindrome}
 		err = data.ToJSON(res, rw)
 		if err != nil {
 			http.Error(rw, "Internal error", http.StatusInternalServerError)
@@ -93,5 +94,16 @@ func (s *server) handleDeleteMessage() http.HandlerFunc {
 			return
 		}
 		rw.WriteHeader(http.StatusNoContent)
+	}
+}
+
+// GET /health
+func (s *server) healthHandler() http.HandlerFunc {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		_, err := rw.Write([]byte("200 OK"))
+		if err != nil {
+			s.logger.Error("Unable to write health response", err)
+			http.Error(rw, "", http.StatusInternalServerError)
+		}
 	}
 }

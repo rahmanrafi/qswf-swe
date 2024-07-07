@@ -22,6 +22,7 @@ type RequestTracing string
 func (s *server) RegisterRoutes() {
 	rootRouter := s.router
 	rootRouter.Handle("/metrics", promhttp.Handler()).Methods(http.MethodGet)
+	rootRouter.HandleFunc("/health", s.healthHandler()).Methods(http.MethodGet)
 
 	// register routes for the api subrouter (i.e., endpoints prefixed with /api/v1)
 	apiRouter := rootRouter.PathPrefix("/api/v1").Subrouter()
