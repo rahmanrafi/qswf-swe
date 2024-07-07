@@ -94,3 +94,14 @@ func (s *server) handleDeleteMessage() http.HandlerFunc {
 		rw.WriteHeader(http.StatusNoContent)
 	}
 }
+
+// GET /health
+func (s *server) healthHandler() http.HandlerFunc {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		_, err := rw.Write([]byte("200 OK"))
+		if err != nil {
+			s.logger.Error("Unable to write health response", err)
+			http.Error(rw, "", http.StatusInternalServerError)
+		}
+	}
+}
