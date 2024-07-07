@@ -34,11 +34,11 @@ func NewServer() Server {
 func (srv *server) Start() {
 	srv.RegisterRoutes()
 	s := http.Server{
-		Addr:         ":" + servicePort,                          // configure the bind address
-		Handler:      Tracing()(Logging(srv.logger)(srv.router)), // set the default handler
-		ReadTimeout:  5 * time.Second,                            // max time to read request from the client
-		WriteTimeout: 10 * time.Second,                           // max time to write response to the client
-		IdleTimeout:  120 * time.Second,                          // max time for connections using TCP Keep-Alive
+		Addr:         ":" + servicePort,                                     // configure the bind address
+		Handler:      Metrics()(Tracing()(Logging(srv.logger)(srv.router))), // set the default handler
+		ReadTimeout:  5 * time.Second,                                       // max time to read request from the client
+		WriteTimeout: 10 * time.Second,                                      // max time to write response to the client
+		IdleTimeout:  120 * time.Second,                                     // max time for connections using TCP Keep-Alive
 	}
 
 	// start the server

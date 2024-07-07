@@ -33,6 +33,7 @@ func (s *server) handlePostMessage() http.HandlerFunc {
 			return
 		}
 		data.AddMessage(message)
+		dataMessagesAddedSum.Inc()
 		rw.WriteHeader(http.StatusCreated)
 	}
 }
@@ -82,6 +83,7 @@ func (s *server) handleDeleteMessage() http.HandlerFunc {
 
 		switch err {
 		case nil:
+			dataMessagesDeletedSum.Inc()
 		case data.ErrMessageNotFound:
 			s.logger.Error("Unable to fetch message to delete", "error: ", err)
 			http.Error(rw, "No message found with the given ID", http.StatusNotFound)
