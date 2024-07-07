@@ -22,9 +22,11 @@ var servicePort = os.Getenv("PORT")
 // NewServer returns an instance of server configured with logger and router
 func NewServer() Server {
 	r := mux.NewRouter()
-	s := r.PathPrefix("/api/v1").Subrouter()
+	// same as for t3: instead of configuring the api subrouter here (and losing the root router for non-api endpoints)
+	// assign server.router to be the root router, and configure the api subrouter in RegisterRoutes()
+	// s := r.PathPrefix("/api/v1").Subrouter()
 	return &server{
-		router: s,
+		router: r,
 		logger: logger.GetLogger(),
 	}
 }
@@ -32,11 +34,11 @@ func NewServer() Server {
 func (srv *server) Start() {
 	srv.RegisterRoutes()
 	s := http.Server{
-		Addr:    ":" + servicePort,                          // configure the bind address
-		Handler: Tracing()(Logging(srv.logger)(srv.router)), // set the default handler
-		ReadTimeout:  5 * time.Second,   // max time to read request from the client
-		WriteTimeout: 10 * time.Second,  // max time to write response to the client
-		IdleTimeout:  120 * time.Second, // max time for connections using TCP Keep-Alive
+		Addr:         ":" + servicePort,                                     // configure the bind address
+		Handler:      Metrics()(Tracing()(Logging(srv.logger)(srv.router))), // set the default handler
+		ReadTimeout:  5 * time.Second,                                       // max time to read request from the client
+		WriteTimeout: 10 * time.Second,                                      // max time to write response to the client
+		IdleTimeout:  120 * time.Second,                                     // max time for connections using TCP Keep-Alive
 	}
 
 	// start the server
